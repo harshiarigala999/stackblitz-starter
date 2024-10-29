@@ -6,24 +6,35 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
+
 let stocks = [
-  { id: 1, name: "reliance industries", price: 2500, growth: 3.5, industry: "finance", exchange: "nse" },
-  { id: 2, name: "hdfc bank", price: 1800, growth: 4.2, industry: "finance", exchange: "bse" },
-  { id: 3, name: "icici bank", price: 1600, growth: 5.1, industry: "finance", exchange: "nse" },
-  { id: 4, name: "tata consultancy services", price: 3200, growth: 2.9, industry: "finance", exchange: "bse" },
-  // Continue with the rest of the stocks...
+  { id: 1, name: "Stock A", price: 100 },
+  { id: 2, name: "Stock B", price: 50 },
+  { id: 3, name: "Stock C", price: 150 },
+  // Add more stocks as needed
 ];
 
-app.get('/stocks/sort/pricing', (req, res) => {
-  const pricing = req.query.order;
-  let sortedStocks;
+// Endpoint to display all stocks
+app.get('/stocks', (req, res) => {
+  res.json({ stocks });
+});
 
+// Endpoint to sort stocks by pricing (low-to-high or high-to-low)
+app.get('/stocks/sort/pricing', (req, res) => {
+  // Get the 'pricing' query parameter
+  const pricing = req.query.pricing;
+
+  // Copy the stocks array to avoid mutating the original data
+  let sortedStocks = [...stocks];
+
+  // Sort stocks based on the pricing condition
   if (pricing === 'high-to-low') {
-    sortedStocks = [...stocks].sort((a, b) => b.price - a.price);
-  } else {
-    sortedStocks = [...stocks].sort((a, b) => a.price - b.price);
+      sortedStocks.sort((a, b) => b.price - a.price);
+  } else if (pricing === 'low-to-high') {
+      sortedStocks.sort((a, b) => a.price - b.price);
   }
 
+  // Return the sorted stocks as a JSON response
   res.json({ stocks: sortedStocks });
 });
 
